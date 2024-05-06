@@ -1,7 +1,7 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Colors from "../constants/Colors";
-import ExerciseTracking from "../screens/settings/ExerciseTracking";
-import CalorieTracking from "../screens/settings/CalorieTracking";
+import ExerciseTracking from "../screens/tracking/ExerciseTracking";
+import CalorieTracking from "../screens/tracking/CalorieTracking";
 import TrackerScreen from "../screens/TrackerScreen";
 
 
