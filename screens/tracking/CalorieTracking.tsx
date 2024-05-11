@@ -9,11 +9,14 @@ import {
 } from "react-native";
 import { useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { FontAwesome } from "@expo/vector-icons";
+import GlobalStyles from "../../constants/GlobalStyles";
 
 
 //npm install @react-native-async-storage/async-storage
 
 export default function App() {
+  const [Food, setFood] = useState("");
   const [calories, setCalories] = useState("");
   const [fat, setFat] = useState("");
   const [protein, setProtein] = useState("");
@@ -64,6 +67,7 @@ export default function App() {
     const newNote = {
       id: Date.now(),
       getValue,
+      Food,
       calories,
       fat,
       carb,
@@ -71,6 +75,7 @@ export default function App() {
       date: Date().toLocaleString(),
     };
     setNotes([...notes, newNote]);
+    setFood("");
     setCalories("");
     setFat("");
     setCarb("");
@@ -79,7 +84,7 @@ export default function App() {
   };
 
   const submitValues = () => {
-    setValue(parseFloat(getValue) + parseFloat(calories));
+    setFood("");
     setCalories("");
     setFat("");
     setCarb("");
@@ -92,6 +97,7 @@ export default function App() {
 
   const closeShowDataInput = () => {
     setOpen(false);
+    setFood("");
     setCalories("");
     setFat("");
     setCarb("");
@@ -109,37 +115,59 @@ export default function App() {
     return (
       <View style={styles.farBackView}>
         <View style={styles.container}>
-          <View>
-            <Text style={styles.calclatedNumber}>{getValue}</Text>
+        <View style={styles.kvp}>
+            <Text style={styles.key}>Food : </Text>
+        <TextInput
+            style={styles.inputText}
+            placeholder="Enter Food"
+            value={Food}
+            onChangeText={setFood}
+          />
           </View>
+
+          <View style={styles.kvp}>
+            <Text style={styles.key}>Calories : </Text>
           <TextInput
             style={styles.inputText}
-            placeholder="Enter todays calories(kcal)"
+            placeholder="Enter calories"
             value={calories}
             onChangeText={setCalories}
             keyboardType="number-pad"
           />
+          </View>
+
+          <View style={styles.kvp}>
+            <Text style={styles.key}>Fat : </Text>
           <TextInput
             style={styles.inputText}
-            placeholder="Enter Fat(g) in food"
+            placeholder="Enter Fat(g)"
             value={fat}
             onChangeText={setFat}
             keyboardType="number-pad"
           />
+          </View>
+
+          <View style={styles.kvp}>
+            <Text style={styles.key}>Carb : </Text>
           <TextInput
             style={styles.inputText}
-            placeholder="Enter Carb(g) in food"
+            placeholder="Enter Carb(g)"
             value={carb}
             onChangeText={setCarb}
             keyboardType="number-pad"
           />
-          <TextInput
-            style={styles.inputText}
-            placeholder="Enter Protein(g) in food"
-            value={protein}
-            onChangeText={setProtein}
-            keyboardType="number-pad"
-          />
+          </View>
+
+          <View style={styles.kvp}>
+            <Text style={styles.key}>Protein : </Text>
+            <TextInput
+              style={styles.inputText}
+              placeholder="Enter Protein(g)"
+              value={protein}
+              onChangeText={setProtein}
+              keyboardType="number-pad"
+            />
+          </View>
           
           <Pressable style={styles.basicButtons} onPress={handleAddTask}>
             <Text style={styles.submitText}>Submit Food</Text>
@@ -160,20 +188,28 @@ export default function App() {
         </Pressable>
         <ScrollView style={styles.scrollViewStyle}>
         {notes.map((note) => (
-          <Pressable
-            style={styles.dataValue}
-            key={`${note.id}`}
-            onPress={() => removeFoodValue(note)}
-          >
+          <View key={`${note.id}`}>
+            
+            <View style={GlobalStyles.ItemContainer}>
             <View style={styles.finalCalcView}>
-              <Text style={styles.finalCalText}>Food</Text>
+              <Text style={styles.finalCalText}>{note.Food}</Text>
             </View>
             <Text style={styles.dateText}>{note.date}</Text>
-            <Text style={styles.calText}>Total Calories: {note.calories}</Text>
+            <Text style={styles.calText}>Calories: {note.calories}</Text>
             <Text style={styles.calText}>Fat(g): {note.fat}</Text>
             <Text style={styles.calText}>Carb(g): {note.carb}</Text>
             <Text style={styles.calText}>Protein(g): {note.protein}</Text>
-          </Pressable>
+            
+            <Pressable
+              style={styles.dataValue}
+              key={`${note.id}`}
+              onPress={() => removeFoodValue(note)}
+            >
+              <FontAwesome name="trash" size={24} color="red" style={styles.trashIcon} />
+              {/* Existing food item content */}
+            </Pressable>
+            </View>
+          </View>
         ))}
         </ScrollView>
       </View>
@@ -192,6 +228,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#572c57",
     alignItems: "center",
     justifyContent: "center",
+    
   },
 
   basicButtons: {
@@ -217,7 +254,6 @@ const styles = StyleSheet.create({
   },
   dataValue: {
     margin: 20,
-    borderColor: "#ffffff",
     borderWidth: 5,
     borderRadius: 10,
     padding: 5,
@@ -260,8 +296,20 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#9f5f91",
     borderRadius: 10,
     margin: 4,
+  },
+  kvp: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginHorizontal: 20,
+    marginVertical: 10,
+  },
+  key: {
+    flex: 1,
+    marginHorizontal: 12,
+    fontSize: 30,
+    color: "white",
   },
 });

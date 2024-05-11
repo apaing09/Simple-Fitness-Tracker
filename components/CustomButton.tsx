@@ -1,6 +1,7 @@
 import { StyleProp, TextStyle, Pressable, ViewStyle } from "react-native";
 import GlobalStyles from "../constants/GlobalStyles";
 import CustomText from "./CustomText";
+import Ionicons from "@expo/vector-icons/Ionicons";
 
 interface CustomButtonProps {
   text: string;

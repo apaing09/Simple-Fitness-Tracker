@@ -5,7 +5,7 @@ import CalorieTracking from "../screens/tracking/CalorieTracking";
 import TrackerScreen from "../screens/TrackerScreen";
 
 
-export type SettingsStackParamList = {
+export type StackTrackerParamList = {
   ExerciseTracking: undefined;
   CalorieTracking: undefined;
 };

@@ -7,6 +7,7 @@ const Colors = {
   accent1: "#f5f5f5",
   accent2: "#572c57",
   accent3: "#0086D0",
+  backgroundItem: "#072958"
 };
 
 export default Colors;

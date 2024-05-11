@@ -9,32 +9,31 @@ import {
 } from "react-native";
 import { useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
-
-//npm install @react-native-async-storage/async-storage
+import { FontAwesome } from "@expo/vector-icons";
+import GlobalStyles from "../../constants/GlobalStyles";
 
 export default function App() {
-  const [calories, setCalories] = useState("");
-  const [fat, setFat] = useState("");
-  const [protein, setProtein] = useState("");
-  const [carb, setCarb] = useState("");
+  const [Exercise, setExercise] = useState("");
+  const [Weight, setWeight] = useState("");
+  const [Sets, setSets] = useState("");
+  const [Reps, setReps] = useState("");
   const [getValue, setValue] = useState(0);
-  const [notes, setNotes] = useState([]);
+  const [WorkOuts, setWorkOuts] = useState([]);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(true);
 
   const getData = async () => {
     try {
-      const jsonValue = await AsyncStorage.getItem("dayValue");
+      const jsonValue = await AsyncStorage.getItem("sessionValue");
       const jsonValue2 = JSON.parse(jsonValue);
       if (jsonValue2 !== null) {
-        setNotes(jsonValue2);
+        setWorkOuts(jsonValue2);
       }
     } catch (e) {
       alert(e);
     } finally {
       setLoading(false);
-      console.log(notes);
+      console.log(WorkOuts);
     }
   };
 
@@ -42,8 +41,8 @@ export default function App() {
     if (!loading) {
       try {
         const jsonValue = await AsyncStorage.setItem(
-          "dayValue",
-          JSON.stringify(notes)
+          "sessionValue",
+          JSON.stringify(WorkOuts)
         );
         return jsonValue;
       } catch (e) {
@@ -58,32 +57,31 @@ export default function App() {
 
   useEffect(() => {
     storeData();
-  }, [notes]);
+  }, [WorkOuts]);
 
   const handleAddTask = () => {
-    const newNote = {
+    const newWorkOut = {
       id: Date.now(),
       getValue,
-      calories,
-      fat,
-      carb,
-      protein,
+      Exercise,
+      Weight,
+      Sets,
+      Reps,
       date: Date().toLocaleString(),
     };
-    setNotes([...notes, newNote]);
-    setCalories("");
-    setFat("");
-    setCarb("");
-    setProtein("");
+    setWorkOuts([...WorkOuts, newWorkOut]);
+    setExercise("");
+    setWeight("");
+    setSets("");
+    setReps("");
     closeShowDataInput();
   };
 
   const submitValues = () => {
-    setValue(parseFloat(getValue) + parseFloat(calories));
-    setCalories("");
-    setFat("");
-    setCarb("");
-    setProtein("");
+    setExercise("");
+    setWeight("");
+    setSets("");
+    setReps("");
   };
 
   const showDataInput = () => {
@@ -92,57 +90,68 @@ export default function App() {
 
   const closeShowDataInput = () => {
     setOpen(false);
-    setCalories("");
-    setFat("");
-    setCarb("");
-    setProtein("");
+    setExercise("");
+    setWeight("");
+    setSets("");
+    setReps("");
     setValue(0);
   };
 
-  const removeFoodValue = (note) => {
-    const updateRemoveNote = notes.filter((item) => item.id !== note.id);
-    console.log(updateRemoveNote);
-    setNotes(updateRemoveNote);
+  const removeExerciseValue = (workout) => {
+    const updateRemoveWorkOut = WorkOuts.filter((item) => item.id !== workout.id);
+    console.log(updateRemoveWorkOut);
+    setWorkOuts(updateRemoveWorkOut);
   };
 
   if (open === true) {
     return (
       <View style={styles.farBackView}>
         <View style={styles.container}>
-          <View>
-            <Text style={styles.calclatedNumber}>{getValue}</Text>
+          <View style={styles.kvp}>
+            <Text style={styles.key}>Exercise : </Text>
+            <TextInput
+              style={styles.inputText}
+              placeholder="Enter Exercise"
+              value={Exercise}
+              onChangeText={setExercise}
+            />
           </View>
-          <TextInput
-            style={styles.inputText}
-            placeholder="Enter todays calories(kcal)"
-            value={calories}
-            onChangeText={setCalories}
-            keyboardType="number-pad"
-          />
-          <TextInput
-            style={styles.inputText}
-            placeholder="Enter Fat(g) in food"
-            value={fat}
-            onChangeText={setFat}
-            keyboardType="number-pad"
-          />
-          <TextInput
-            style={styles.inputText}
-            placeholder="Enter Carb(g) in food"
-            value={carb}
-            onChangeText={setCarb}
-            keyboardType="number-pad"
-          />
-          <TextInput
-            style={styles.inputText}
-            placeholder="Enter Protein(g) in food"
-            value={protein}
-            onChangeText={setProtein}
-            keyboardType="number-pad"
-          />
-          
+
+          <View style={styles.kvp}>
+            <Text style={styles.key}>Weight : </Text>
+            <TextInput
+              style={styles.inputText}
+              placeholder="Enter Weight"
+              value={Weight}
+              onChangeText={setWeight}
+              keyboardType="number-pad"
+            />
+          </View>
+
+          <View style={styles.kvp}>
+            <Text style={styles.key}>Sets : </Text>
+            <TextInput
+              style={styles.inputText}
+              placeholder="Enter Sets"
+              value={Sets}
+              onChangeText={setSets}
+              keyboardType="number-pad"
+            />
+          </View>
+
+          <View style={styles.kvp}>
+            <Text style={styles.key}>Reps : </Text>
+            <TextInput
+              style={styles.inputText}
+              placeholder="Enter Reps"
+              value={Reps}
+              onChangeText={setReps}
+              keyboardType="number-pad"
+            />
+          </View>
+
           <Pressable style={styles.basicButtons} onPress={handleAddTask}>
-            <Text style={styles.submitText}>Submit Food</Text>
+            <Text style={styles.submitText}>Submit Exercise</Text>
           </Pressable>
           <Pressable style={styles.basicButtons} onPress={closeShowDataInput}>
             <Text style={styles.submitText}>Close</Text>
@@ -156,25 +165,31 @@ export default function App() {
     <View style={styles.farBackView}>
       <View style={styles.container}>
         <Pressable style={styles.basicButtons} onPress={showDataInput}>
-          <Text style={styles.submitText}>Add New Food Item</Text>
+          <Text style={styles.submitText}>Add New Exercise</Text>
         </Pressable>
         <ScrollView style={styles.scrollViewStyle}>
-        {notes.map((note) => (
-          <Pressable
-            style={styles.dataValue}
-            key={`${note.id}`}
-            onPress={() => removeFoodValue(note)}
-          >
-            <View style={styles.finalCalcView}>
-              <Text style={styles.finalCalText}>Food</Text>
+          {WorkOuts.map((workout) => (
+            <View key={`${workout.id}`}>
+              <View style={GlobalStyles.ItemContainer}>
+                <View style={styles.finalCalcView}>
+                  <Text style={styles.finalCalText}>{workout.Exercise}</Text>
+                </View>
+                <Text style={styles.dateText}>{workout.date}</Text>
+                <Text style={styles.calText}>Weight: {workout.Weight}</Text>
+                <Text style={styles.calText}>Sets: {workout.Sets}</Text>
+                <Text style={styles.calText}>Reps: {workout.Reps}</Text>
+
+                <Pressable
+                  style={styles.dataValue}
+                  key={`${workout.id}`}
+                  onPress={() => removeExerciseValue(workout)}
+                >
+                  <FontAwesome name="trash" size={24} color="red" style={styles.trashIcon} />
+                  {/* Existing Exercise item content */}
+                </Pressable>
+              </View>
             </View>
-            <Text style={styles.dateText}>{note.date}</Text>
-            <Text style={styles.calText}>Total Calories: {note.calories}</Text>
-            <Text style={styles.calText}>Fat(g): {note.fat}</Text>
-            <Text style={styles.calText}>Carb(g): {note.carb}</Text>
-            <Text style={styles.calText}>Protein(g): {note.protein}</Text>
-          </Pressable>
-        ))}
+          ))}
         </ScrollView>
       </View>
 
@@ -193,7 +208,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-
   basicButtons: {
     width: "70%",
     backgroundColor: "#0086D0",
@@ -207,17 +221,12 @@ const styles = StyleSheet.create({
     color: "white",
     fontWeight: "bold",
   },
-  headerContainer: {
-    paddingTop: 40,
-    width: "100%",
-  },
   scrollViewStyle: {
     width: "100%",
     marginTop: 10,
   },
   dataValue: {
     margin: 20,
-    borderColor: "#ffffff",
     borderWidth: 5,
     borderRadius: 10,
     padding: 5,
@@ -241,11 +250,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#fff",
   },
-  calclatedNumber: {
-    fontSize: 50,
-    color: "#fff",
-    fontWeight: "bold",
-  },
   inputText: {
     fontSize: 29,
     backgroundColor: "#D3D3D3",
@@ -253,15 +257,24 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: "white",
   },
-  pressed: {
-    backgroundColor: "grey",
-  },
   finalCalcView: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#9f5f91",
     borderRadius: 10,
     margin: 4,
+  },
+  kvp: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginHorizontal: 20,
+    marginVertical: 10,
+  },
+  key: {
+    flex: 1,
+    marginHorizontal: 12,
+    fontSize: 30,
+    color: "white",
   },
 });

@@ -1,32 +1,34 @@
 import React from "react";
 import { useNavigation } from "@react-navigation/native";
-import { NativeStackNavigationProp, createNativeStackNavigator } from "@react-navigation/native-stack";
 import { StyleSheet, Text, View } from "react-native";
 import Colors from "../constants/Colors";
 import GlobalStyles from "../constants/GlobalStyles";
 import CustomButton from "../components/CustomButton";
-import { SettingsStackParamList } from "../components/StackTracker";
+import { StackTrackerParamList } from "../components/StackTracker";
+import Ionicons from "@expo/vector-icons/Ionicons";
 
-const SettingsScreen = () => {
+const TrackerScreen = () => {
+  const navigation = useNavigation<NativeStackNavigationProp<StackTrackerParamList>>();
 
-  const navigation = 
-  useNavigation <createNativeStackNavigator<SettingsStackParamList>>();
- 
   return (
-  <View style={GlobalStyles.screenContainer}>
-    <CustomButton
-      text="Track Exercise!"
-      textStyle={styles.TrackerButtonText}
-      pressableStyle={styles.TrackerButton}
-      onPress={() => navigation.navigate("ExerciseTracking")}
-      />
+    <View style={GlobalStyles.screenContainer}>
       <CustomButton
-      text="Track Calories!"
-      textStyle={styles.TrackerButtonText}
-      pressableStyle={[styles.TrackerButton, styles.space]}
-      onPress={() => navigation.navigate("CalorieTracking")}
+        text="Track Exercise!"
+        textStyle={styles.TrackerButtonText}
+        pressableStyle={styles.TrackerButton}
+        onPress={() => navigation.navigate("ExerciseTracking")}
+        icon="barbell-outline"
+        
       />
-  </View>
+      
+      <CustomButton
+        text="Track Calories!"
+        textStyle={styles.TrackerButtonText}
+        pressableStyle={[styles.TrackerButton, styles.space]}
+        onPress={() => navigation.navigate("CalorieTracking")}
+        icon="barbell-outline"
+      />
+    </View>
   );
 };
 
@@ -44,14 +46,18 @@ const styles = StyleSheet.create({
     borderRadius: 0,
     borderBottomWidth: 4,
     borderColor: Colors.textBack + "80",
+    flexDirection: "row", // Align icon and text horizontally
+    justifyContent: "center", // Center the icon and text
+    alignItems: "center", // Center the icon and text
   },
   TrackerButtonText: {
     color: Colors.textBack,
     fontWeight: "bold",
+    marginLeft: 10, // Add margin between icon and text
   },
   space: {
     marginTop: 10, // Add margin or padding to create space between buttons
   },
 });
 
-export default SettingsScreen;
+export default TrackerScreen;
